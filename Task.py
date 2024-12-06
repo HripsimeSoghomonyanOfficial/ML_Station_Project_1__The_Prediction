@@ -1,6 +1,3 @@
-# Fraud Detection Project Code
-
-# Import libraries
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,53 +6,51 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-# Load dataset
-file_path = "online_payments_fraud.csv"  # Replace with the actual dataset path
+
+file_path = "online_payments_fraud.csv" 
 data = pd.read_csv(file_path)
 
-# Inspect dataset
+
 print(data.head())
 print(data.info())
 print(data.describe())
 
-# Data visualization
-# Plot the distribution of the target variable (isFraud)
+
 sns.countplot(x="isFraud", data=data)
 plt.title("Distribution of Fraudulent Transactions")
 plt.show()
 
-# Correlation heatmap
+
 plt.figure(figsize=(10, 6))
 sns.heatmap(data.corr(), annot=True, fmt=".2f", cmap="coolwarm")
 plt.title("Feature Correlation Heatmap")
 plt.show()
 
-# Preprocessing
-# Drop irrelevant columns for modeling
+
 data = data.drop(columns=["nameOrig", "nameDest"])
 
-# Handle missing values if any
+
 data = data.dropna()
 
-# Define features (X) and target (y)
+
 X = data.drop(columns=["isFraud"])
 y = data["isFraud"]
 
-# Train-test split
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42, stratify=y)
 
-# Model training
+
 model = DecisionTreeClassifier(random_state=42)
 model.fit(X_train, y_train)
 
-# Model evaluation
+
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 
 print(f"Model Accuracy: {accuracy:.2f}")
 print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
-# Confusion Matrix
+
 conf_matrix = confusion_matrix(y_test, y_pred)
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", xticklabels=["Not Fraud", "Fraud"], yticklabels=["Not Fraud", "Fraud"])
 plt.title("Confusion Matrix")
@@ -63,17 +58,17 @@ plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.show()
 
-# Example prediction
+
 example_data = X_test.iloc[0].values.reshape(1, -1)
 example_prediction = model.predict(example_data)
 print(f"Example Prediction: {'Fraud' if example_prediction[0] == 1 else 'Not Fraud'}")
 
-# Save model and results
+
 import joblib
 joblib.dump(model, "fraud_detection_model.pkl")
 print("Model saved as 'fraud_detection_model.pkl'.")
 
-# Generate a sample README
+
 with open("README.md", "w") as f:
     f.write("# Online Payments Fraud Detection\n\n")
     f.write("## Project Overview\n")
